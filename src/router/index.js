@@ -6,14 +6,20 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: () => import('../pages/calendar.vue')
-  }
+    component: () => import('../layouts/default.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('../pages/calendar.vue'),
+      },
+    ],
+  },
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
 })
 
 export default router

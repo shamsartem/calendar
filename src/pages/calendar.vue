@@ -1,3 +1,14 @@
 <template lang="pug">
-div
+div.page
+  Calendar
 </template>
+
+<script>
+import Calendar from '@/components/calendar/calendar.vue'
+
+export default {
+  components: {
+    Calendar,
+  },
+}
+</script>
