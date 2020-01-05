@@ -17,7 +17,7 @@ div(
     | {{ day.dayOfTheWeek }}
   div(
     :class='c.weekDaysShadow'
-    )
+  )
 </template>
 
 <style lang="postcss" module="c">
@@ -168,7 +168,7 @@ function useWeekDayNames (props) {
 
     return new Array(7)
       .fill(null)
-      .map((_, i) => format(addDays(weekStart, i), monthFormat.value, props.locale))
+      .map((_, i) => format(addDays(weekStart, i), monthFormat.value, { locale: props.locale }))
   })
 }
 </script>

@@ -20,6 +20,15 @@ div(
       })`
     ) >
     label
+      span.visuallyHidden Select locale:
+      select(
+        v-model='locale'
+      )
+        option(
+          v-for='l in locales'
+          :value='l'
+        ) {{ l.code }}
+    label
       span.visuallyHidden Select calendar type:
       select(
         v-model='calendarType'
@@ -50,7 +59,7 @@ div(
   background-color: #413bb8;
   color: white;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   height: 60px;
 }
 
@@ -81,11 +90,11 @@ import {
 
   format,
 } from 'date-fns'
-import { ru } from 'date-fns/locale'
+import { ru, enUS } from 'date-fns/locale'
 
 export default {
   setup () {
-    const locale = ru
+    const { locale, locales } = useSelectLocale()
 
     const {
       calendarType,
@@ -113,9 +122,11 @@ export default {
 
       selectedDate,
       selectDate,
-      locale,
 
       selectedDayText,
+
+      locale,
+      locales,
     }
   },
 }
@@ -159,13 +170,13 @@ function useSelectedDateText (selectedDate, calendarType, locale) {
   return computed(() => {
     switch (calendarType.value) {
       case 'month':
-        return format(selectedDate.value, 'MMMM, yyyy', locale)
+        return format(selectedDate.value, 'MMMM, yyyy', { locale: locale.value })
 
       case 'week':
-        return format(selectedDate.value, 'MMMM, yyyy', locale)
+        return format(selectedDate.value, 'MMMM, yyyy', { locale: locale.value })
 
       case 'day':
-        return format(selectedDate.value, 'MMMM, yyyy', locale)
+        return format(selectedDate.value, 'MMMM, yyyy', { locale: locale.value })
     }
   })
 }
@@ -224,6 +235,19 @@ function useSelectCalendarType (params) {
     calendarType,
     calendarTypes,
     currentCalendarComponent,
+  }
+}
+
+function useSelectLocale (params) {
+  const locale = ref(ru)
+  const locales = [
+    ru,
+    enUS,
+  ]
+
+  return {
+    locale,
+    locales,
   }
 }
 </script>
