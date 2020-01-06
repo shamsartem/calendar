@@ -12,7 +12,7 @@ div(
     :class='[c.day, day.otherMonth && c.day_otherMonth]'
   )
     div(
-      :class='c.number'
+      :class='[c.number, day.today && c.number_today]'
     ) {{ day.number }}
     | {{ day.dayOfTheWeek }}
   div(
@@ -27,8 +27,6 @@ div(
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: 36px repeat(auto-fit, minmax(0, 1fr));
-  gap: 1px;
-  background-color: #eee;
   flex-grow: 1;
 }
 
@@ -38,22 +36,26 @@ div(
   width: 100%;
   height: 36px;
   box-shadow: 0 0 20px #aaa;
+  pointer-events: none;
 }
 
 .weekDayName {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: white;
+  background-color: white;
   line-height: 1;
   font-size: 12px;
   color: #8b8b9a;
+  border-right: 1px solid #eee;
 }
 
 .day {
   background: white;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 
   &_otherMonth {
     color: #aaa;
@@ -61,13 +63,26 @@ div(
 }
 
 .number {
-  padding-top: 10px;
-  padding-left: 10px;
+  font-size: 18px;
+  border-radius: 50%;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin-top: 10px;
+  margin-left: 10px;
+  text-align: center;
+  line-height: 30px;
+
+  &_today {
+    background-color: #413bb8;
+    color: white;
+  }
 }
 </style>
 
 <script>
-import { computed, ref, onBeforeUnmount } from '@vue/composition-api'
+import { computed } from '@vue/composition-api'
+import useDaysOfWeek from '../use-days-of-week'
 import {
   startOfMonth,
   getDay,
@@ -75,8 +90,8 @@ import {
   addDays,
   format,
   isSameMonth,
-  startOfWeek,
   getDaysInMonth,
+  isSameDay,
 } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
@@ -97,7 +112,7 @@ export default {
   },
   setup (props) {
     const monthDays = useMonthDays(props)
-    const weekDayNames = useWeekDayNames(props)
+    const weekDayNames = useDaysOfWeek(props)
     return {
       monthDays,
       weekDayNames,
@@ -137,38 +152,9 @@ function useMonthDays (props) {
           date,
           number: format(date, 'd'),
           otherMonth: !isSameMonth(date, props.selectedDate),
+          today: isSameDay(date, props.now),
         }
       })
-  })
-}
-
-function useWeekDayNames (props) {
-  const mediaQuery = window.matchMedia('(min-width: 567px)')
-  const monthFormat = ref('EEEE')
-
-  const onWindowResize = () => {
-    if (mediaQuery.matches) {
-      monthFormat.value = 'EEEE'
-      return
-    }
-
-    monthFormat.value = 'EEEEEE'
-  }
-
-  onWindowResize()
-
-  window.addEventListener('resize', onWindowResize)
-
-  onBeforeUnmount(() => {
-    window.removeEventListener(onWindowResize)
-  })
-
-  return computed(() => {
-    const weekStart = startOfWeek(props.selectedDate, { locale: props.locale })
-
-    return new Array(7)
-      .fill(null)
-      .map((_, i) => format(addDays(weekStart, i), monthFormat.value, { locale: props.locale }))
   })
 }
 </script>

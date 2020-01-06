@@ -197,7 +197,7 @@ function useNow (updatePeriod = 60000) {
 }
 
 function useSelectCalendarType (params) {
-  const calendarType = ref('month')
+  const calendarType = ref('week')
   const calendarTypes = [
     {
       name: 'month',
