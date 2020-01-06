@@ -121,7 +121,8 @@ div(
 
 .event {
   position: absolute;
-  width: 100%;
+  width: 95%;
+  border-radius: 3px;
   background-color: #dcdefe;
 }
 
