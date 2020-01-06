@@ -3,8 +3,9 @@ div(
   :class='c.container'
 )
   div(
-    v-for='weekDayName in weekDayNames'
+    v-for='(weekDayName, i) in weekDayNames'
     :class='c.weekDayName'
+    :style='`grid-column: ${i + 1}`'
   )
     div {{ weekDayName }}
   div(
@@ -31,15 +32,15 @@ div(
 }
 
 .weekDaysShadow {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 36px;
+  grid-row: 1;
+  grid-column: 1 / span 7;
   box-shadow: 0 0 20px #aaa;
   pointer-events: none;
+  z-index: 1;
 }
 
 .weekDayName {
+  grid-row: 1;
   display: flex;
   justify-content: center;
   align-items: center;

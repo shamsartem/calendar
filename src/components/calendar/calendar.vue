@@ -52,6 +52,7 @@ div(
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
+  position: relative;
 }
 
 .controls {
@@ -61,6 +62,9 @@ div(
   align-items: center;
   justify-content: space-around;
   height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .button {
