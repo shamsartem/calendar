@@ -1,5 +1,7 @@
 <template lang="pug">
-div.page
+div(
+  :class='c.page'
+)
   Calendar
 </template>
 
@@ -12,3 +14,12 @@ export default {
   },
 }
 </script>
+
+<style lang="postcss" module="c">
+.page {
+  display: flex;
+  max-height: 100vh;
+  flex-grow: 1;
+  width: 100%;
+}
+</style>

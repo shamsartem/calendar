@@ -1,12 +1,19 @@
 <template lang="pug">
 div(
   :class='c.container'
+  :style='`grid-template-columns: auto repeat(${7 * numberOfPeople}, 1fr);`'
 )
+  div(
+    :class='c.emptyDay'
+  )
   div(
     v-for='(day, i) in daysOfWeek'
     :class='c.day'
     :style='`grid-column: ${numberOfPeople * i + 2} / span ${numberOfPeople}`'
   ) {{ day }}
+  div(
+    :class='c.emptyPerson'
+  )
   template(
     v-for='(hour, i) in hours'
   )
@@ -55,10 +62,9 @@ div(
 
 <style lang="postcss" module="c">
 .container {
-  overflow: auto;
   display: grid;
   grid-template-rows: 36px auto repeat(25, minmax(50px, 1fr));
-  flex-grow: 1;
+  min-width: max-content;
 }
 
 .day {
@@ -69,7 +75,22 @@ div(
   font-size: 12px;
   color: #8b8b9a;
   border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
   grid-column: span 2;
+  grid-row: 1;
+  position: sticky;
+  top: 60px;
+  background-color: #fff;
+  z-index: 4;
+}
+
+.emptyDay {
+  position: sticky;
+  top: 60px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  z-index: 4;
+  grid-column: 1;
   grid-row: 1;
 }
 
@@ -79,6 +100,20 @@ div(
   border-bottom: 1px solid #eee;
   padding: 20px;
   white-space: nowrap;
+  position: sticky;
+  top: 96px;
+  background-color: #fff;
+  z-index: 2;
+}
+
+.emptyPerson {
+  position: sticky;
+  top: 96px;
+  background-color: #fff;
+  z-index: 2;
+  grid-column: 1;
+  grid-row: 2;
+  border-bottom: 1px solid #eee;
 }
 
 .timetable {
@@ -123,10 +158,12 @@ div(
 }
 
 .weekDaysShadow {
-  grid-row: 1;
+  grid-row: 2;
   box-shadow: 0 0 20px #aaa;
   pointer-events: none;
-  z-index: 1;
+  z-index: 3;
+  position: sticky;
+  top: 96px;
 }
 
 .event {
@@ -263,7 +300,7 @@ function useTimetable (props, {
   pixelsDividedBySecondsInADay,
   timetableEls,
 }) {
-  const numberOfPeople = 3
+  const numberOfPeople = 2
 
   return {
     timetablesForWeek: computed(() => {
@@ -275,7 +312,7 @@ function useTimetable (props, {
           doctors: new Array(numberOfPeople)
             .fill(null)
             .map((_, j) => ({
-              name: `Person ${i + 1}`,
+              name: `Person ${j + 1}`,
               timeslots: new Array(12)
                 .fill(null)
                 .map((_, k) => {

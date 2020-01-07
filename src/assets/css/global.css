@@ -16,13 +16,6 @@ body {
   display: flex;
 }
 
-.page {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  width: 100%;
-}
-
 .visuallyHidden {
   position: absolute !important;
   top: -9999px !important;

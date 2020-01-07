@@ -53,6 +53,7 @@ div(
   flex-grow: 1;
   width: 100%;
   position: relative;
+  overflow: auto;
 }
 
 .controls {
@@ -64,7 +65,8 @@ div(
   height: 60px;
   position: sticky;
   top: 0;
-  z-index: 2;
+  left: 0;
+  z-index: 4;
 }
 
 .button {
