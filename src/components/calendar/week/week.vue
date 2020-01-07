@@ -8,9 +8,17 @@ div(
   )
   div(
     v-for='(day, i) in daysOfWeek'
-    :class='c.day'
+    :class='[c.day, isSameDay(now, day.date) && c.day_today]'
     :style='`grid-column: ${numberOfPeople * i + 2} / span ${numberOfPeople}`'
-  ) {{ day }}
+  )
+    span(
+      aria-hidden='true'
+    ) {{ day.name }}
+    button(
+      :class='c.dayButton'
+      @click='$emit("setDate", day.date)'
+    )
+      span.visuallyHidden {{ day.name }}
   div(
     :class='c.emptyPerson'
   )
@@ -48,11 +56,12 @@ div(
         template(
           v-if='isSameDay(startOfWeek(selectedDate, { locale }), startOfWeek(doctor.timeslots[0].startTime, { locale }))'
         )
-          div(
+          button(
             v-for='timeslot in doctor.timeslots'
             :class='c.event'
-            :style='`top: ${timeslot.start}px; height: ${timeslot.end - timeslot.start}px`'
+            :style='`top: ${timeslot.start}px; min-height: ${timeslot.end - timeslot.start}px`'
           )
+            span {{ timeslot.text }}
         div(
           v-if='isSameDay(now, timetablesForDay.date)'
           :class='c.now'
@@ -73,7 +82,7 @@ div(
   align-items: center;
   line-height: 1;
   font-size: 12px;
-  color: #8b8b9a;
+  color: dimgrey;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee;
   grid-column: span 2;
@@ -82,6 +91,20 @@ div(
   top: 60px;
   background-color: #fff;
   z-index: 4;
+  text-transform: capitalize;
+
+  &_today {
+    color: #413bb8;
+    font-weight: 700;
+  }
+}
+
+.dayButton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .emptyDay {
@@ -141,7 +164,7 @@ div(
   justify-content: flex-end;
   grid-column: 1;
   padding: 0 5px 0 15px;
-  color: #999;
+  color: dimgrey;
   font-size: 12px;
   white-space: nowrap;
   position: sticky;
@@ -171,12 +194,16 @@ div(
   width: 95%;
   border-radius: 3px;
   background-color: #dcdefe;
+  font-size: 12px;
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
 }
 
 .now {
   position: absolute;
   width: calc(100% + 1px);
-  height: 1px;
+  height: 2px;
   background-color: red;
 }
 </style>
@@ -317,7 +344,7 @@ function useTimetable (props, {
                 .fill(null)
                 .map((_, k) => {
                   const s = addHours(addHours(addDays(start, i), k), j + 8)
-                  const e = addMinutes(s, 30)
+                  const e = addMinutes(s, 45)
                   return {
                     start: timeToPixelsFromTop({
                       time: s,
@@ -325,6 +352,7 @@ function useTimetable (props, {
                       timetableEls,
                     }).value,
                     startTime: s,
+                    text: `${format(s, 'hh:mm', { locale: props.locale })} - ${format(e, 'hh:mm', { locale: props.locale })}`,
                     end: timeToPixelsFromTop({
                       time: e,
                       pixelsDividedBySecondsInADay,
@@ -332,7 +360,8 @@ function useTimetable (props, {
                     }).value,
                     endTime: e,
                   }
-                }),
+                })
+                .filter(_ => Math.random() > 0.5),
             })),
         }))
     }),

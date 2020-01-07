@@ -32,6 +32,12 @@ export default function useWeekDayNames (props, showDate = false) {
     const weekStart = startOfWeek(props.selectedDate, { locale: props.locale })
     return new Array(7)
       .fill(null)
-      .map((_, i) => format(addDays(weekStart, i), monthFormat.value, { locale: props.locale }))
+      .map((_, i) => {
+        const date = addDays(weekStart, i)
+        return {
+          date,
+          name: format(date, monthFormat.value, { locale: props.locale }),
+        }
+      })
   })
 }

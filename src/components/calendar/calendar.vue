@@ -37,13 +37,13 @@ div(
           v-for='type in calendarTypes'
           :value='type.value'
         ) {{ type.name }}
-  keep-alive
-    component(
-      :is='currentCalendarComponent'
-      :now='now'
-      :selectedDate='selectedDate'
-      :locale='locale'
-    )
+  component(
+    :is='currentCalendarComponent'
+    :now='now'
+    :selectedDate='selectedDate'
+    :locale='locale'
+    @setDate='setDate'
+  )
 </template>
 
 <style lang="postcss" module="c">
@@ -119,6 +119,11 @@ export default {
 
     const selectedDayText = useSelectedDateText(selectedDate, calendarType, locale)
 
+    function setDate (e) {
+      selectDate({ value: e })
+      calendarType.value = 'day'
+    }
+
     return {
       calendarType,
       calendarTypes,
@@ -128,6 +133,7 @@ export default {
 
       selectedDate,
       selectDate,
+      setDate,
 
       selectedDayText,
 
@@ -143,7 +149,6 @@ function useSelectDate (locale) {
   const selectDate = ({
     value,
     back,
-    date,
   }) => {
     selectedDate.value = (() => {
       switch (value) {
@@ -160,8 +165,8 @@ function useSelectDate (locale) {
           return startOfDay(addDays(selectedDate.value, 1))
 
         default:
-          if (date) return date
-          return selectedDate.value
+          if (!value) return new Date()
+          return value
       }
     })()
   }
@@ -203,7 +208,7 @@ function useNow (updatePeriod = 60000) {
 }
 
 function useSelectCalendarType (params) {
-  const calendarType = ref('week')
+  const calendarType = ref('day')
   const calendarTypes = [
     {
       name: 'month',

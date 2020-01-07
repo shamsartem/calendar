@@ -6,16 +6,23 @@ div(
     v-for='(weekDayName, i) in weekDayNames'
     :class='c.weekDayName'
     :style='`grid-column: ${i + 1}`'
+    aria-hidden='true'
   )
-    div {{ weekDayName }}
+    div {{ weekDayName.name }}
   div(
     v-for='day in monthDays'
     :class='[c.day, day.otherMonth && c.day_otherMonth]'
   )
     div(
       :class='[c.number, day.today && c.number_today]'
+      aria-hidden='true'
     ) {{ day.number }}
     | {{ day.dayOfTheWeek }}
+    button(
+      :class='c.dayButton'
+      @click='$emit("setDate", day.date)'
+    )
+      span.visuallyHidden {{ day.srText }}
   div(
     :class='c.weekDaysShadow'
   )
@@ -47,8 +54,9 @@ div(
   background-color: white;
   line-height: 1;
   font-size: 12px;
-  color: #8b8b9a;
+  color: dimgrey;
   border-right: 1px solid #eee;
+  text-transform: capitalize;
 }
 
 .day {
@@ -57,10 +65,19 @@ div(
   flex-direction: column;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee;
+  position: relative;
 
   &_otherMonth {
     color: #aaa;
   }
+}
+
+.dayButton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .number {
@@ -156,6 +173,7 @@ function useMonthDays (props) {
         return {
           date,
           number: format(date, 'd'),
+          srText: `${format(date, 'do MMMM yyyy', { locale: props.locale })}`,
           otherMonth: !isSameMonth(date, props.selectedDate),
           today: isSameDay(date, props.now),
         }
