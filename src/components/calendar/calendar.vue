@@ -187,7 +187,7 @@ function useSelectedDateText (selectedDate, calendarType, locale) {
         return format(selectedDate.value, 'MMMM, yyyy', { locale: locale.value })
 
       case 'day':
-        return format(selectedDate.value, 'MMMM, yyyy', { locale: locale.value })
+        return format(selectedDate.value, 'do MMMM, yyyy', { locale: locale.value })
     }
   })
 }
