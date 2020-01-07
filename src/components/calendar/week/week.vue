@@ -13,7 +13,8 @@ div(
     div(
       :class='c.hourText'
       :style='`grid-row: ${i + 3}`'
-    ) {{ hour }}
+    )
+      span {{ hour }}
     div(
       :class='c.hourLine'
       :style='`grid-row: ${i + 3}; grid-column: 2 / span ${numberOfPeople * 7}`'
@@ -100,12 +101,18 @@ div(
 }
 
 .hourText {
-  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   grid-column: 1;
-  padding: 0 5px;
+  padding: 0 5px 0 15px;
   color: #999;
   font-size: 12px;
   white-space: nowrap;
+  position: sticky;
+  left: 0;
+  background-color: #fff;
+  z-index: 1;
 }
 
 .hourLine {
