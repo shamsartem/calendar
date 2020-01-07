@@ -143,6 +143,10 @@ function useMonthDays (props) {
       numberOfDaysToGenerate = 42
     }
 
+    if (daysInMonth === 28 && extraDaysOfPreviousMonth === 0) {
+      numberOfDaysToGenerate = 28
+    }
+
     const firstDay = subDays(monthStart, extraDaysOfPreviousMonth)
 
     return new Array(numberOfDaysToGenerate)
