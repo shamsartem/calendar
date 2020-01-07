@@ -113,7 +113,7 @@ export default {
     const {
       selectedDate,
       selectDate,
-    } = useSelectDate()
+    } = useSelectDate(locale)
 
     const selectedDayText = useSelectedDateText(selectedDate, calendarType, locale)
 
@@ -135,7 +135,7 @@ export default {
   },
 }
 
-function useSelectDate () {
+function useSelectDate (locale) {
   const selectedDate = ref(new Date())
 
   const selectDate = ({
@@ -150,8 +150,8 @@ function useSelectDate () {
           return startOfMonth(addMonths(selectedDate.value, 1))
 
         case 'week':
-          if (back) return startOfWeek(subWeeks(selectedDate.value, 1))
-          return startOfWeek(addWeeks(selectedDate.value, 1))
+          if (back) return startOfWeek(subWeeks(selectedDate.value, 1), { locale: locale.value })
+          return startOfWeek(addWeeks(selectedDate.value, 1), { locale: locale.value })
 
         case 'day':
           if (back) return startOfDay(subDays(selectedDate.value, 1))

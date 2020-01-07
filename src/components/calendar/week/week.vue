@@ -37,13 +37,16 @@ div(
         :style='`grid-column: ${2 + i * numberOfPeople + j}`'
         ref='timetableEls'
       )
-        div(
-          v-for='timeslot in doctor.timeslots'
-          :class='c.event'
-          :style='`top: ${timeslot.start}px; height: ${timeslot.end - timeslot.start}px`'
+        template(
+          v-if='isSameDay(startOfWeek(selectedDate, { locale }), startOfWeek(doctor.timeslots[0].startTime, { locale }))'
         )
+          div(
+            v-for='timeslot in doctor.timeslots'
+            :class='c.event'
+            :style='`top: ${timeslot.start}px; height: ${timeslot.end - timeslot.start}px`'
+          )
         div(
-          v-if='isSameDay(now, doctor.timeslots[0].startTime)'
+          v-if='isSameDay(now, timetablesForDay.date)'
           :class='c.now'
           :style='nowStyle'
         )
@@ -53,7 +56,7 @@ div(
 .container {
   overflow: auto;
   display: grid;
-  grid-template-rows: 36px auto repeat(25, minmax(25px, 1fr));
+  grid-template-rows: 36px auto repeat(25, minmax(50px, 1fr));
   flex-grow: 1;
 }
 
@@ -135,7 +138,7 @@ div(
 </style>
 
 <script>
-import { computed, ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
+import { computed, ref, onMounted, onBeforeUnmount, watch } from '@vue/composition-api'
 import useDaysOfWeek from '../use-days-of-week'
 import { ru } from 'date-fns/locale'
 import {
@@ -191,6 +194,7 @@ export default {
       timetableEls,
       nowStyle,
       isSameDay,
+      startOfWeek,
     }
   },
 }
@@ -216,9 +220,13 @@ function useTimeToPixels () {
   const pixelsDividedBySecondsInADay = ref(0.09)
 
   const setPixelsDividedBySecondsInADay = () => {
-    const h = timetableEls.value[0].offsetHeight
+    const h = timetableEls.value ? timetableEls.value[0].offsetHeight : 0
     pixelsDividedBySecondsInADay.value = (h - h / 25) / 86400
   }
+
+  watch(() => {
+    setPixelsDividedBySecondsInADay(timetableEls.value)
+  })
 
   onMounted(setPixelsDividedBySecondsInADay)
   window.addEventListener('resize', setPixelsDividedBySecondsInADay)
@@ -248,40 +256,42 @@ function useTimetable (props, {
   pixelsDividedBySecondsInADay,
   timetableEls,
 }) {
-  const start = startOfWeek(new Date(), { locale: props.locale })
   const numberOfPeople = 3
 
   return {
-    timetablesForWeek: computed(() => new Array(7)
-      .fill(null)
-      .map((_, i) => ({
-        date: addDays(start, i),
-        doctors: new Array(numberOfPeople)
-          .fill(null)
-          .map((_, j) => ({
-            name: `Person ${i + 1}`,
-            timeslots: new Array(12)
-              .fill(null)
-              .map((_, k) => {
-                const s = addHours(addHours(addDays(start, i), k), j + 8)
-                const e = addMinutes(s, 30)
-                return {
-                  start: timeToPixelsFromTop({
-                    time: s,
-                    pixelsDividedBySecondsInADay,
-                    timetableEls,
-                  }).value,
-                  startTime: s,
-                  end: timeToPixelsFromTop({
-                    time: e,
-                    pixelsDividedBySecondsInADay,
-                    timetableEls,
-                  }).value,
-                  endTime: e,
-                }
-              }),
-          })),
-      }))),
+    timetablesForWeek: computed(() => {
+      const start = startOfWeek(props.selectedDate, { locale: props.locale })
+      return new Array(7)
+        .fill(null)
+        .map((_, i) => ({
+          date: addDays(start, i),
+          doctors: new Array(numberOfPeople)
+            .fill(null)
+            .map((_, j) => ({
+              name: `Person ${i + 1}`,
+              timeslots: new Array(12)
+                .fill(null)
+                .map((_, k) => {
+                  const s = addHours(addHours(addDays(start, i), k), j + 8)
+                  const e = addMinutes(s, 30)
+                  return {
+                    start: timeToPixelsFromTop({
+                      time: s,
+                      pixelsDividedBySecondsInADay,
+                      timetableEls,
+                    }).value,
+                    startTime: s,
+                    end: timeToPixelsFromTop({
+                      time: e,
+                      pixelsDividedBySecondsInADay,
+                      timetableEls,
+                    }).value,
+                    endTime: e,
+                  }
+                }),
+            })),
+        }))
+    }),
     numberOfPeople,
   }
 }
