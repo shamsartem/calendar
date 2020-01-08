@@ -59,6 +59,7 @@ div(
   display: grid;
   grid-template-rows: 36px auto repeat(25, minmax(50px, 1fr));
   min-width: max-content;
+  flex-grow: 1;
 }
 
 .month {
