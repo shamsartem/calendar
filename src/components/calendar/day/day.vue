@@ -1,7 +1,7 @@
 <template lang="pug">
 div(
   :class='c.container'
-  :style='`grid-template-columns: fit-content(0) repeat(${7 * numberOfPeople}, auto);`'
+  :style='`grid-template-columns: fit-content(0) repeat(${numberOfPeople}, auto);`'
 )
   div(
     :class='c.month'
