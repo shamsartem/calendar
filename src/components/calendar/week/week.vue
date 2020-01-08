@@ -1,7 +1,7 @@
 <template lang="pug">
 div(
   :class='c.container'
-  :style='`grid-template-columns: auto repeat(${7 * numberOfPeople}, 1fr);`'
+  :style='`grid-template-columns: fit-content(0) repeat(${7 * numberOfPeople}, auto);`'
 )
   div(
     :class='c.emptyDay'
@@ -121,7 +121,6 @@ div(
 .person {
   grid-row: 2;
   border-right: 1px solid #eee;
-  border-bottom: 1px solid #eee;
   padding: 20px;
   white-space: nowrap;
   position: sticky;
@@ -137,7 +136,6 @@ div(
   z-index: 2;
   grid-column: 1;
   grid-row: 2;
-  border-bottom: 1px solid #eee;
 }
 
 .timetable {
