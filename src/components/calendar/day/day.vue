@@ -48,7 +48,7 @@ div(
         )
           span {{ timeslot.text }}
       div(
-        v-if='!i && isSameDay(now, timetablesForDay.date)'
+        v-if='isSameDay(now, timetablesForDay.date)'
         :class='c.now'
         :style='nowStyle'
       )
@@ -160,7 +160,7 @@ div(
 
 .now {
   position: absolute;
-  width: 100%;
+  width: calc(100% + 1px);
   height: 2px;
   background-color: red;
 }
@@ -212,7 +212,7 @@ export default {
       timetableEls,
       pixelsDividedBySecondsInADay,
       time: props.now,
-    }).value - 1}px; width: ${100 * numberOfPeople}%`)
+    }).value - 1}px;`)
 
     return {
       hours,
