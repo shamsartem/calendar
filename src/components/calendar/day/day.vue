@@ -34,7 +34,7 @@ div(
       :style='`grid-column: ${2 + i}`'
     ) {{ doctor.name }}
     div(
-      :class='[c.timetable, !j && c.timetable_first]'
+      :class='[c.timetable]'
       :style='`grid-column: ${2 + i}`'
       ref='timetableEls'
     )
@@ -47,11 +47,11 @@ div(
           :style='`top: ${timeslot.start}px; min-height: ${timeslot.end - timeslot.start}px`'
         )
           span {{ timeslot.text }}
-  div(
-    v-if='isSameDay(now, timetablesForDay.date)'
-    :class='c.now'
-    :style='nowStyle'
-  )
+      div(
+        v-if='!i && isSameDay(now, timetablesForDay.date)'
+        :class='c.now'
+        :style='nowStyle'
+      )
 </template>
 
 <style lang="postcss" module="c">
@@ -212,7 +212,7 @@ export default {
       timetableEls,
       pixelsDividedBySecondsInADay,
       time: props.now,
-    }).value - 1}px; grid-column: 2 / span ${numberOfPeople}`)
+    }).value - 1}px; width: ${100 * numberOfPeople}%`)
 
     return {
       hours,
