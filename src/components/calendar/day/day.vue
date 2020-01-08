@@ -16,6 +16,7 @@ div(
     div(
       :class='c.hourText'
       :style='`grid-row: ${i + 3}`'
+      aria-hidden='true'
     )
       span {{ hour }}
     div(
