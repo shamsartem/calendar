@@ -182,12 +182,12 @@ div(
 }
 
 .weekDaysShadow {
-  grid-row: 2;
+  grid-row: 1 / span 2;
   box-shadow: 0 0 20px #aaa;
   pointer-events: none;
   z-index: 3;
   position: sticky;
-  top: 96px;
+  top: 60px;
 }
 
 .event {
