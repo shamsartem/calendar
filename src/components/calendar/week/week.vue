@@ -19,9 +19,6 @@ div(
       @click='$emit("setDate", day.date)'
     )
       span.visuallyHidden {{ day.name }}
-  div(
-    :class='c.emptyPerson'
-  )
   template(
     v-for='(hour, i) in hours'
   )
@@ -76,6 +73,16 @@ div(
   grid-template-rows: 36px auto repeat(25, minmax(50px, 1fr));
   min-width: max-content;
   flex-grow: 1;
+
+  &::before {
+    content: '';
+    position: sticky;
+    top: 96px;
+    background-color: #fff;
+    z-index: 2;
+    grid-column: 1;
+    grid-row: 2;
+  }
 }
 
 .day {
@@ -130,15 +137,6 @@ div(
   z-index: 2;
 }
 
-.emptyPerson {
-  position: sticky;
-  top: 96px;
-  background-color: #fff;
-  z-index: 2;
-  grid-column: 1;
-  grid-row: 2;
-}
-
 .timetable {
   position: relative;
   border-right: 1px solid #eee;
@@ -182,11 +180,20 @@ div(
 
 .weekDaysShadow {
   grid-row: 1 / span 2;
-  box-shadow: 0 0 20px #aaa;
   pointer-events: none;
-  z-index: 3;
   position: sticky;
   top: 60px;
+  z-index: 3;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: -20px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    height: 20px;
+    width: 100%;
+  }
 }
 
 .event {
