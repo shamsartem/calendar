@@ -62,7 +62,7 @@ div(
   color: white;
   align-items: center;
   justify-content: space-around;
-  height: 60px;
+  min-height: 60px;
   position: sticky;
   top: 0;
   left: 0;
